@@ -5325,6 +5325,31 @@ func NkeyOptionFromSeed(seedFile string) (Option, error) {
 	return Nkey(string(pub), sigCB), nil
 }
 
+// NkeyOptionFromSeedBytes will load an nkey pair from seed bytes.
+// It will return the NKey Option and will handle
+// signing of nonce challenges from the server. It will take
+// care to not hold keys in memory and to wipe memory.
+func NkeyOptionFromSeedBytes(seed []byte) (Option, error) {
+	kp, err := nkeys.ParseDecoratedNKey(seed)
+	if err != nil {
+		return nil, err
+	}
+	// Wipe our key on exit.
+	defer kp.Wipe()
+
+	pub, err := kp.PublicKey()
+	if err != nil {
+		return nil, err
+	}
+	if !nkeys.IsValidPublicUserKey(pub) {
+		return nil, fmt.Errorf("nats: Not a valid nkey user seed")
+	}
+	sigCB := func(nonce []byte) ([]byte, error) {
+		return kp.Sign(nonce)
+	}
+	return Nkey(string(pub), sigCB), nil
+}
+
 // Just wipe slice with 'x', for clearing contents of creds or nkey seed file.
 func wipeSlice(buf []byte) {
 	for i := range buf {
