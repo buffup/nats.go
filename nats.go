@@ -5325,7 +5325,7 @@ func NkeyOptionFromSeed(seedFile string) (Option, error) {
 	return Nkey(string(pub), sigCB), nil
 }
 
-// NkeyOptionFromSeedBytes will load an nkey pair from a seed string.
+// NkeyOptionFromSeedBytes will load an nkey pair from seed bytes.
 // It will return the NKey Option and will handle
 // signing of nonce challenges from the server. It will take
 // care to not hold keys in memory and to wipe memory.
