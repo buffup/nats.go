@@ -5334,8 +5334,6 @@ func NkeyOptionFromSeedBytes(seed []byte) (Option, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Wipe our key on exit.
-	defer kp.Wipe()
 
 	pub, err := kp.PublicKey()
 	if err != nil {
